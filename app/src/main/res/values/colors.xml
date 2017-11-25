@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#b00707</color>
+    <color name="colorPrimaryDark">#ce100b</color>
+    <color name="colorAccent">#4682B4</color>
+    <color name="colorText">#780606</color>
+    <color name="black">#47525e</color>
+    <color name="white">#fff</color>
+    <color name="textRecoverPassword">@color/colorAccent</color>
+    <color name="textLabel">@color/black</color>
+    <color name="editTextLogin">@color/colorPrimaryDark</color>
+    <color name="verdeClaro">#4682B4</color>
+    <color name="valorSaida">#ce100b</color>
+    <color name="backgroundItem">#f5f5f5</color>
+    <color name="cinzaClaro">#DCDCDC</color>
+    <color name="estadoPositivoParceiro">#4682B4</color>
+    <color name="estadoNegativoParceiro">#ce100b</color>
+    <color name="estadoAtencaoParceiro">#ffea00</color>
+    <color name="cinzaEscuro">#7b7579</color>
+</resources>

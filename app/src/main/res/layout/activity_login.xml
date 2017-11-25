@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:src="@drawable/logo_nazare"
+        android:id="@+id/imageViewIcon"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="50dp"
+        android:paddingLeft="50dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/imageViewIcon"
+        android:layout_alignTop="@+id/imageViewIcon"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="270dp">
+
+
+        <EditText
+            android:id="@+id/editTextUsuario"
+            android:paddingLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/round_shape_edit"
+            android:inputType="text"
+            android:padding="3dp"
+            android:hint="Login"
+            android:drawablePadding="12dip"
+            android:drawableLeft="@drawable/login_icon"/>
+
+
+        <EditText
+            android:id="@+id/editTextSenha"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/round_shape_edit"
+            android:inputType="textPassword"
+            android:hint="Senha"
+            android:drawablePadding="12dip"
+            android:layout_marginTop="25dp"
+            android:drawableLeft="@drawable/senha"
+            android:padding="3dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:text="Entrar"
+        android:textColor="@color/white"
+        android:layout_marginTop="35dp"
+        android:id="@+id/btnLoginEntrar"
+        android:background="@drawable/round_shape_btn"
+        android:layout_below="@+id/linearlayout"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrar-se"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:id="@+id/registrarUsuarioBtn"
+        android:clickable="true"
+        android:padding="10dp"
+        android:layout_below="@+id/btnLoginEntrar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Esqueci a Senha"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:id="@+id/esqueciASenhaBtn"
+        android:clickable="true"
+        android:layout_below="@+id/registrarUsuarioBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
+
+</RelativeLayout>
