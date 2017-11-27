@@ -1,16 +1,20 @@
 package br.com.resoluteit.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +35,8 @@ public class TelaInicial extends AppCompatActivity {
     private DataManipulator dm;
 
     private Button   btnSelecionar;
+
+    private Button   btnFinalizar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,16 @@ public class TelaInicial extends AppCompatActivity {
                 navToSecao();
             }
         });
+
+        btnFinalizar = (Button) findViewById(R.id.btnFinalizar);
+
+        btnFinalizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                finalizarConcorrente();
+            }
+        });
     }
 
 
@@ -84,5 +100,24 @@ public class TelaInicial extends AppCompatActivity {
 
         this.startActivity(i);
 
+    }
+
+    private void finalizarConcorrente(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+        builder.setMessage("Concorrente Finalizado!")
+                .setCancelable(true)
+                .setNegativeButton("Enviar Pesquisa",null)
+                .setPositiveButton("Continuar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+
+                            }
+                        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

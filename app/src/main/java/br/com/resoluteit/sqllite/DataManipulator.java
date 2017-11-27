@@ -39,8 +39,8 @@ public class DataManipulator {
 
     private void inicializaSqls() {
 
-        insertPesquisaSql = "insert into pesquisa_preco (id,concorrente,ean,secao,grupo,sub_grupo,descricao,preco,flag,id_arquivo,sincronizado) " +
-                "values (?,?,?,?,?,?,?,?,?,?,?)";
+        insertPesquisaSql = "insert into pesquisa_preco (id,concorrente,ean,secao,grupo,sub_grupo,descricao,preco,flag,id_arquivo,sincronizado,situacao) " +
+                "values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
 
 
@@ -97,6 +97,7 @@ public class DataManipulator {
                     String flag = cursor.getString(8);
                     String id_arquivo = cursor.getString(9);
                     String sincronizado = cursor.getString(10);
+                    String situacao = cursor.getString(11);
 
                     PesquisaPreco pp = new PesquisaPreco();
 
@@ -111,6 +112,7 @@ public class DataManipulator {
                     pp.setFlag(flag);
                     pp.setIdArquivo(Integer.parseInt(id_arquivo));
                     pp.setSincronizado(sincronizado);
+                    pp.setSituacao(situacao);
 
                     list.add(pp);
 
@@ -152,10 +154,11 @@ public class DataManipulator {
                     String grupo = cursor.getString(4);
                     String sub_grupo = cursor.getString(5);
                     String descricao = cursor.getString(6);
-                    String preco = cursor.getString(6);
-                    String flag = cursor.getString(6);
-                    String id_arquivo = cursor.getString(6);
-                    String sincronizado = cursor.getString(6);
+                    String preco = cursor.getString(7);
+                    String flag = cursor.getString(8);
+                    String id_arquivo = cursor.getString(9);
+                    String sincronizado = cursor.getString(10);
+                    String situacao = cursor.getString(11);
 
                     PesquisaPreco pp = new PesquisaPreco();
 
@@ -170,6 +173,133 @@ public class DataManipulator {
                     pp.setFlag(flag);
                     pp.setIdArquivo(Integer.parseInt(id_arquivo));
                     pp.setSincronizado(sincronizado);
+                    pp.setSituacao(situacao);
+
+                    list.add(pp);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        return list;
+    }
+
+    public PesquisaPreco retornaProduto(String concorrenteParam,String secaoParam,String eanParam) {
+
+        PesquisaPreco pp = new PesquisaPreco();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where concorrente = '"+concorrenteParam+"' and secao='"+secaoParam+"'  and" +
+                " ean='"+eanParam+"'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+
+
+                    String id = cursor.getString(0);
+                    String concorrente = cursor.getString(1);
+                    String ean = cursor.getString(2);
+                    String secao = cursor.getString(3);
+                    String grupo = cursor.getString(4);
+                    String sub_grupo = cursor.getString(5);
+                    String descricao = cursor.getString(6);
+                    String preco = cursor.getString(7);
+                    String flag = cursor.getString(8);
+                    String id_arquivo = cursor.getString(9);
+                    String sincronizado = cursor.getString(10);
+                    String situacao = cursor.getString(11);
+
+                    pp.setId(Integer.parseInt(id));
+                    pp.setConcorrente(concorrente);
+                    pp.setEan(ean);
+                    pp.setSecao(secao);
+                    pp.setGrupo(grupo);
+                    pp.setSubGrupo(sub_grupo);
+                    pp.setDescricao(descricao);
+                    pp.setPreco(preco);
+                    pp.setFlag(flag);
+                    pp.setIdArquivo(Integer.parseInt(id_arquivo));
+                    pp.setSincronizado(sincronizado);
+                    pp.setSituacao(situacao);
+
+                }
+
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        return pp;
+    }
+
+    public boolean updateProduto(String concorrenteS,String secaoS,String eanS,String preco,String situacao){
+
+        String sql = "update  " + TABLE_PESQUISA + " set preco='"+preco+"', flag='S',situacao='" + situacao+"' "+
+                " where concorrente = '"+concorrenteS+"' and secao='"+secaoS+"' and ean='"+eanS+"'";
+
+        db.execSQL(sql);
+
+        return true;
+
+    }
+
+    public List<PesquisaPreco> listaPesquisaByConcorrenteAndSecao(String concorrenteParam,String secaoParam) {
+
+        List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where concorrente = '"+concorrenteParam+"' and secao='"+secaoParam+"'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    String id = cursor.getString(0);
+                    String concorrente = cursor.getString(1);
+                    String ean = cursor.getString(2);
+                    String secao = cursor.getString(3);
+                    String grupo = cursor.getString(4);
+                    String sub_grupo = cursor.getString(5);
+                    String descricao = cursor.getString(6);
+                    String preco = cursor.getString(7);
+                    String flag = cursor.getString(8);
+                    String id_arquivo = cursor.getString(9);
+                    String sincronizado = cursor.getString(10);
+                    String situacao = cursor.getString(11);
+
+
+                    PesquisaPreco pp = new PesquisaPreco();
+
+                    pp.setId(Integer.parseInt(id));
+                    pp.setConcorrente(concorrente);
+                    pp.setEan(ean);
+                    pp.setSecao(secao);
+                    pp.setGrupo(grupo);
+                    pp.setSubGrupo(sub_grupo);
+                    pp.setDescricao(descricao);
+                    pp.setPreco(preco);
+                    pp.setFlag(flag);
+                    pp.setIdArquivo(Integer.parseInt(id_arquivo));
+                    pp.setSincronizado(sincronizado);
+                    pp.setSituacao(situacao);
 
                     list.add(pp);
 
@@ -193,7 +323,7 @@ public class DataManipulator {
 
         List<String> list = new ArrayList<String>();
 
-        String sql = "select distinct concorrente from " + TABLE_PESQUISA + " where flag = 'N' ";
+        String sql = "select distinct concorrente from " + TABLE_PESQUISA;
 
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -228,7 +358,7 @@ public class DataManipulator {
 
         List<String> list = new ArrayList<String>();
 
-        String sql = "select distinct secao from " + TABLE_PESQUISA + " where flag = 'N' and concorrente='"+concorrente+"'";
+        String sql = "select distinct secao from " + TABLE_PESQUISA + " where concorrente='"+concorrente+"'";
 
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -256,6 +386,45 @@ public class DataManipulator {
         }
 
         return list;
+    }
+
+    public Boolean verificaSessaoCompleta(String concorrente,String secao) {
+
+
+        List<String> list = new ArrayList<String>();
+
+        String sql = "select * from " + TABLE_PESQUISA + "" +
+                " where concorrente='"+concorrente+"' and secao='"+secao+"' and flag='N'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String id = cursor.getString(0);
+
+                    list.add(id);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        if(list.size() == 0)
+            return true;
+        else
+            return false;
+
     }
 
 
@@ -301,7 +470,7 @@ public class DataManipulator {
         public void onCreate(SQLiteDatabase db) {
 
             db.execSQL("CREATE TABLE " + TABLE_PESQUISA + " (id TEXT,concorrente TEXT,ean TEXT,secao TEXT,grupo TEXT," +
-                    "sub_grupo TEXT,descricao TEXT,preco TEXT,flag TEXT,id_arquivo TEXT,sincronizado TEXT)");
+                    "sub_grupo TEXT,descricao TEXT,preco TEXT,flag TEXT,id_arquivo TEXT,sincronizado TEXT,situacao TEXT)");
 
         }
 

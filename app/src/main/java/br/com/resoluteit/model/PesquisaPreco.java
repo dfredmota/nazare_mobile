@@ -31,6 +31,16 @@ public class PesquisaPreco {
 
 	private String  sincronizado;
 
+	private String  situacao;
+
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
+	}
+
 	public String getSincronizado() {
 		return sincronizado;
 	}
@@ -126,7 +136,9 @@ public class PesquisaPreco {
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
-	
-	
 
+	@Override
+	public String toString() {
+		return this.descricao;
+	}
 }

@@ -54,10 +54,10 @@
     <Button
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:text="Finalizar"
+        android:text="Selecionar Seção"
         android:textColor="@color/white"
         android:layout_marginTop="15dp"
-        android:id="@+id/btnFinalizar"
+        android:id="@+id/btnSecao"
         android:background="@drawable/round_shape_btn"
         android:layout_below="@+id/linearlayout"
         android:layout_centerHorizontal="true" />
@@ -65,12 +65,13 @@
     <Button
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:text="Voltar"
+        android:text="Finalizar"
         android:textColor="@color/white"
         android:layout_marginTop="15dp"
-        android:id="@+id/btnVoltar"
+        android:id="@+id/btnFinalizar"
         android:background="@drawable/round_shape_btn"
-        android:layout_below="@+id/btnFinalizar"
+        android:layout_below="@+id/btnSecao"
         android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_nazare"
+        android:id="@+id/imageViewIcon"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/imageViewIcon"
+        android:layout_alignTop="@+id/imageViewIcon"
+        android:layout_marginTop="60dp">
+
+
+        <TextView
+            android:id="@+id/concorrente"
+            android:paddingLeft="10dp"
+            android:textSize="15sp"
+            android:text="Concorrente: "
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/secao"
+            android:paddingLeft="10dp"
+            android:textSize="15sp"
+            android:text="Seção: "
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/viewLoginBottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@+id/linearlayout"
+        android:layout_weight="1"/>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:layout_below="@+id/viewLoginBottom"
+        android:scrollbars="vertical"/>
+
+
+
+</RelativeLayout>
