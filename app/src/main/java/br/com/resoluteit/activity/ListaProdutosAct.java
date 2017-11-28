@@ -30,7 +30,6 @@ public class ListaProdutosAct extends AppCompatActivity {
 
     List<PesquisaPreco> lista;
 
-
     private TextView concorrenteT;
 
     private TextView        secaoT;
