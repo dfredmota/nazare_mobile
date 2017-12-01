@@ -45,7 +45,7 @@ public class SincronizarTask extends AsyncTask<String, String, String> {
 
         // atualiza cada arquivo que foi sincronizado
             for(Integer i : idsArquivo)
-            ws.atualizarArquivoParaSincronizado(i);
+            ws.atualizarArquivoParaSincronizado(i,Integer.parseInt(params[0]));
 
 
         }catch (Exception e){

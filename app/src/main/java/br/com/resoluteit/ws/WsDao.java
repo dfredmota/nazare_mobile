@@ -16,12 +16,49 @@ import java.util.List;
 import java.util.Properties;
 
 import br.com.resoluteit.model.PesquisaPreco;
+import br.com.resoluteit.model.Usuario;
 
 
 public class WsDao {
 
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+
+	public static Usuario loginApp(String matricula, String senha) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		Usuario usuario = null;
+
+		try {
+			con = DataConnect.getConnection();
+			ps = con.prepareStatement("Select * from usuarios_app where matricula = ? and senha = ?");
+			ps.setString(1, matricula);
+			ps.setString(2, senha);
+
+			ResultSet rs = ps.executeQuery();
+
+			System.out.println(ps);
+
+			if (rs.next()) {
+
+				usuario = new Usuario();
+
+				usuario.setId(rs.getInt("id"));
+				usuario.setNome(rs.getString("nome"));
+				usuario.setMatricula(rs.getString("matricula"));
+				usuario.setSenha(rs.getString("senha"));
+
+			}
+
+		} catch (SQLException ex) {
+			System.out.println("Login error -->" + ex.getMessage());
+			return usuario;
+		} finally {
+			DataConnect.close(con);
+		}
+		return usuario;
+	}
 
 
 	public static List<PesquisaPreco> sincronizaPesquisaPreco(){
@@ -74,7 +111,7 @@ public class WsDao {
 	}
 
 
-	public static void atualizarArquivoParaSincronizado(Integer idArquivo){
+	public static void atualizarArquivoParaSincronizado(Integer idArquivo,Integer idUsuarioSincronismo){
 
 		PreparedStatement ps = null;
 		Connection con = null;
@@ -82,7 +119,7 @@ public class WsDao {
 
 		try {
 
-			String sql = "update arquivos set sincronizado='S' where id="+idArquivo;
+			String sql = "update arquivos set sincronizado='S',id_usuario="+idUsuarioSincronismo+" where id="+idArquivo;
 
 			con = DataConnect.getConnection();
 

@@ -19,6 +19,7 @@ import java.util.List;
 import br.com.resoluteit.adapter.SpinnerAdapter;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.sqllite.DataManipulator;
+import br.com.resoluteit.util.MascaraMonetaria;
 import resoluteit.com.br.R;
 
 public class ProdutoAct extends AppCompatActivity {
@@ -137,7 +138,24 @@ public class ProdutoAct extends AppCompatActivity {
 
             }else{
 
-                dialogPreco();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProdutoAct.this);
+
+                builder.setMessage("EAN difere do cadastrado")
+                        .setCancelable(true)
+                        .setNegativeButton("Voltar",null)
+                        .setPositiveButton("Digitar Preço",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        dialogPreco();
+                                    }
+                                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
             }
 
         }
@@ -154,6 +172,9 @@ public class ProdutoAct extends AppCompatActivity {
         alert.setMessage("Digite o preço do produto:");
         alert.setView(input);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+
+        input.addTextChangedListener(new MascaraMonetaria(input));
+
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 

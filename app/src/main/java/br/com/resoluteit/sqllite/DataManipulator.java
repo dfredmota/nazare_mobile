@@ -132,6 +132,50 @@ public class DataManipulator {
         return list;
     }
 
+    public Boolean concorrenteFinalizado(String concorrenteParam) {
+
+        List<String> list = new ArrayList<String>();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where concorrente = ? and flag='N' ";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{concorrenteParam});
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    String id = cursor.getString(0);
+
+                    list.add(id);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        if(list != null && !list.isEmpty()){
+
+            return false;
+
+        }else if(list == null || list.isEmpty()){
+
+            return true;
+        }
+
+        return false;
+
+    }
+
     public List<PesquisaPreco> listaPesquisaByConcorrente(String concorrenteParam) {
 
         List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();

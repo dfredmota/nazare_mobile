@@ -49,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:textSize="12sp"
             android:textColor="@color/black"
             android:layout_toRightOf="@+id/txt_descricao"
             android:layout_below="@+id/codigo"/>
@@ -67,10 +68,13 @@
             android:id="@+id/flag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text=""
+            android:layout_alignBaseline="@+id/txt_flag"
+            android:layout_alignBottom="@+id/txt_flag"
+            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@+id/txt_flag"
             android:layout_toRightOf="@+id/txt_flag"
-            android:layout_below="@+id/descricao"
+            android:text="aaaa"
             android:textColor="@color/black"
             android:textSize="14dp" />
 

@@ -68,29 +68,5 @@
         android:layout_below="@+id/linearlayout"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Registrar-se"
-        android:textSize="16sp"
-        android:textColor="@color/colorPrimaryDark"
-        android:id="@+id/registrarUsuarioBtn"
-        android:clickable="true"
-        android:padding="10dp"
-        android:layout_below="@+id/btnLoginEntrar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Esqueci a Senha"
-        android:textSize="16sp"
-        android:textColor="@color/colorPrimaryDark"
-        android:id="@+id/esqueciASenhaBtn"
-        android:clickable="true"
-        android:layout_below="@+id/registrarUsuarioBtn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" />
 
 </RelativeLayout>

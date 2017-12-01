@@ -24,8 +24,6 @@ public class SecaoAct extends AppCompatActivity {
 
     private Button  btnVoltar;
 
-    private Button  btnFinalizar;
-
     private Button  btnSecao;
 
 
@@ -57,7 +55,7 @@ public class SecaoAct extends AppCompatActivity {
 
         spinnerSecao = (Spinner) findViewById(R.id.spinnerSecao);
 
-        btnFinalizar = (Button) findViewById(R.id.btnFinalizar);
+        btnVoltar = (Button) findViewById(R.id.btnVoltar);
 
         btnSecao     = (Button) findViewById(R.id.btnSecao);
 
@@ -73,6 +71,13 @@ public class SecaoAct extends AppCompatActivity {
         SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.adapter_spinner, lista, getResources());
 
         spinnerSecao.setAdapter(adapter);
+
+        btnVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navToHome();
+            }
+        });
 
 
 
