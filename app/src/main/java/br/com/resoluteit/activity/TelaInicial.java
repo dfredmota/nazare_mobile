@@ -1,5 +1,6 @@
 package br.com.resoluteit.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.PreferenceManager;
@@ -20,13 +21,14 @@ import java.util.List;
 import java.util.Locale;
 
 import br.com.resoluteit.adapter.SpinnerAdapter;
+import br.com.resoluteit.delegate.GerarArquivoDelegate;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.model.Usuario;
 import br.com.resoluteit.sqllite.DataManipulator;
 import br.com.resoluteit.util.Data;
 import resoluteit.com.br.R;
 
-public class TelaInicial extends AppCompatActivity {
+public class TelaInicial extends AppCompatActivity implements GerarArquivoDelegate {
 
     DateFormat formatador = DateFormat.getDateInstance(DateFormat.FULL, new Locale("pt", "BR"));
 
@@ -45,6 +47,11 @@ public class TelaInicial extends AppCompatActivity {
 
     private Button   btnSair;
 
+    private List<PesquisaPreco> listaSincronismo;
+
+    ProgressDialog ringProgressDialog;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +66,19 @@ public class TelaInicial extends AppCompatActivity {
         Usuario usuarioLogado = Data.getUsuario(PreferenceManager.getDefaultSharedPreferences(this));
 
         getSupportActionBar().setTitle("Funcionário: "+usuarioLogado.getNome());
+    }
+
+    @Override
+    public void carregaDialog() {
+        ringProgressDialog= ProgressDialog.show(this,"Realizando exportação dos dados!...","");
+        ringProgressDialog.show();
+    }
+
+    @Override
+    public void gerouArquivo(Boolean sucesso) {
+
+        ringProgressDialog.dismiss();
+
     }
 
     private void instanceObjects(){
@@ -200,7 +220,49 @@ public class TelaInicial extends AppCompatActivity {
 
         builder.setMessage("Existem Seções pendentes nesse concorrente!")
                 .setCancelable(true)
-                .setNegativeButton("Enviar Pesquisa Parcial",null)
+                .setNegativeButton("Cancelar",null)
+                .setPositiveButton("Enviar Pesquisa Parcial",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+
+
+
+                            }
+                        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    private void populaListaSincronismo(){
+
+        this.listaSincronismo = this.dm.listaPraSincronizar(spinnerConcorrente.getSelectedItem().toString());
+
+        if(this.listaSincronismo == null || this.listaSincronismo.isEmpty()){
+
+            msgNaoHaDadosSincronismo();
+
+        }else{
+
+            // prepara a sincronizacao
+
+
+
+        }
+    }
+
+
+
+    private void concorrenteFinalizado(){
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+        builder.setMessage("Concorrente Finalizado!")
+                .setCancelable(true)
+                .setNegativeButton("Enviar Pesquisa",null)
                 .setPositiveButton("Cancelar",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -215,16 +277,13 @@ public class TelaInicial extends AppCompatActivity {
     }
 
 
-
-    private void concorrenteFinalizado(){
+    private void msgNaoHaDadosSincronismo(){
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
 
         builder.setMessage("Concorrente Finalizado!")
-                .setCancelable(true)
-                .setNegativeButton("Enviar Pesquisa",null)
-                .setPositiveButton("Cancelar",
+                .setCancelable(true).setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 

@@ -79,8 +79,6 @@ public class SecaoAct extends AppCompatActivity {
             }
         });
 
-
-
     }
 
 

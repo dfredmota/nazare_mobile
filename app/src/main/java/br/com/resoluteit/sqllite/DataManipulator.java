@@ -70,6 +70,67 @@ public class DataManipulator {
 
     }
 
+    public List<PesquisaPreco> listaPraSincronizar(String concorrente) {
+
+        List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
+
+        String sql = "select * from " + TABLE_PESQUISA+" where concorrente='"+concorrente+"' and flad='S'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    String id = cursor.getString(0);
+                    String concorrenteR = cursor.getString(1);
+                    String ean = cursor.getString(2);
+                    String secao = cursor.getString(3);
+                    String grupo = cursor.getString(4);
+                    String sub_grupo = cursor.getString(5);
+                    String descricao = cursor.getString(6);
+                    String preco = cursor.getString(7);
+                    String flag = cursor.getString(8);
+                    String id_arquivo = cursor.getString(9);
+                    String sincronizado = cursor.getString(10);
+                    String situacao = cursor.getString(11);
+
+                    PesquisaPreco pp = new PesquisaPreco();
+
+                    pp.setId(Integer.parseInt(id));
+                    pp.setConcorrente(concorrenteR);
+                    pp.setEan(ean);
+                    pp.setSecao(secao);
+                    pp.setGrupo(grupo);
+                    pp.setSubGrupo(sub_grupo);
+                    pp.setDescricao(descricao);
+                    pp.setPreco(preco);
+                    pp.setFlag(flag);
+                    pp.setIdArquivo(Integer.parseInt(id_arquivo));
+                    pp.setSincronizado(sincronizado);
+                    pp.setSituacao(situacao);
+
+                    list.add(pp);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 
     public List<PesquisaPreco> all() {
 
