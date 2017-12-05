@@ -42,10 +42,7 @@ public class DataManipulator {
         insertPesquisaSql = "insert into pesquisa_preco (id,concorrente,ean,secao,grupo,sub_grupo,descricao,preco,flag,id_arquivo,sincronizado,situacao) " +
                 "values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
-
-
     }
-
     public DataManipulator(Context context) {
 
         inicializaSqls();
@@ -74,7 +71,7 @@ public class DataManipulator {
 
         List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
 
-        String sql = "select * from " + TABLE_PESQUISA+" where concorrente='"+concorrente+"' and flad='S'";
+        String sql = "select * from " + TABLE_PESQUISA+" where concorrente='"+concorrente+"' and flag='S'";
 
         Cursor cursor = db.rawQuery(sql, null);
 

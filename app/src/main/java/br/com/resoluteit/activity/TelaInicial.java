@@ -1,9 +1,15 @@
 package br.com.resoluteit.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +31,7 @@ import br.com.resoluteit.delegate.GerarArquivoDelegate;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.model.Usuario;
 import br.com.resoluteit.sqllite.DataManipulator;
+import br.com.resoluteit.task.GeraArquivoTask;
 import br.com.resoluteit.util.Data;
 import resoluteit.com.br.R;
 
@@ -51,6 +58,12 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     ProgressDialog ringProgressDialog;
 
+    final int MY_PERMISSIONS_REQUEST_CAMERA = 859;
+
+    final int MY_PERMISSIONS_REQUEST_STORAGE = 869;
+
+    final int MY_PERMISSIONS_REQUEST_STORAGE_READ = 879;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +79,14 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
         Usuario usuarioLogado = Data.getUsuario(PreferenceManager.getDefaultSharedPreferences(this));
 
         getSupportActionBar().setTitle("Funcionário: "+usuarioLogado.getNome());
+
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
     }
 
     @Override
@@ -78,6 +99,11 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
     public void gerouArquivo(Boolean sucesso) {
 
         ringProgressDialog.dismiss();
+
+        if(sucesso){
+
+            mensagemArquivoSucesso();
+        }
 
     }
 
@@ -225,7 +251,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-
+                                populaListaSincronismo();
 
 
                             }
@@ -247,10 +273,25 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
         }else{
 
             // prepara a sincronizacao
+            GeraArquivoTask task = new GeraArquivoTask(this,this);
 
+            Object[] params = new Object[2];
+
+            params[0] = this.listaSincronismo;
+
+
+            task.execute(params);
 
 
         }
+    }
+
+    // TODO:sincroniza os registros para status = 'S'
+    private void updateListaSincronismo(){
+
+
+
+
     }
 
 
@@ -262,14 +303,33 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         builder.setMessage("Concorrente Finalizado!")
                 .setCancelable(true)
-                .setNegativeButton("Enviar Pesquisa",null)
-                .setPositiveButton("Cancelar",
+                .setNegativeButton("Cancelar",null)
+                .setPositiveButton("Enviar Pesquisa",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
+                                populaListaSincronismo();
 
                             }
                         });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    private void mensagemArquivoSucesso(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+        builder.setMessage("Exportação Realizada com Sucesso!")
+                .setCancelable(true).setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                            return;
+                    }
+                });
 
         AlertDialog alert = builder.create();
         alert.show();
@@ -294,5 +354,97 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+
+    private void makePermissions() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_STORAGE_READ);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

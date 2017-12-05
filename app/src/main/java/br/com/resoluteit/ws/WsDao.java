@@ -24,6 +24,34 @@ public class WsDao {
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
+	public static String getFileName(Integer idArquivo) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		String retorno = "";
+
+		try {
+			con = DataConnect.getConnection();
+			ps = con.prepareStatement("Select nome from arquivos where id = ?");
+			ps.setInt(1, idArquivo);
+			ResultSet rs = ps.executeQuery();
+
+			System.out.println(ps);
+
+			if (rs.next()) {
+
+				retorno = rs.getString("nome");
+
+			}
+
+		} catch (SQLException ex) {
+			System.out.println("Login error -->" + ex.getMessage());
+			return retorno;
+		} finally {
+			DataConnect.close(con);
+		}
+		return retorno;
+	}
+
 
 	public static Usuario loginApp(String matricula, String senha) {
 		Connection con = null;
