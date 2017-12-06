@@ -15,6 +15,23 @@ import br.com.resoluteit.model.Usuario;
 public class Data {
 
 
+    public static void insertProdutoNaoEcontrado(SharedPreferences mPrefs,Integer qtd){
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+
+        prefsEditor.putInt("naoEncontrado",qtd);
+
+        prefsEditor.commit();
+
+    }
+
+    public static Integer getQuantidadeProdutoNaoEncontrado(SharedPreferences mPrefs){
+
+        Integer qtd = mPrefs.getInt("naoEncontrado",0);
+
+        return qtd;
+
+    }
 
 
     public static void insertUsuario(SharedPreferences mPrefs, Usuario usuario){

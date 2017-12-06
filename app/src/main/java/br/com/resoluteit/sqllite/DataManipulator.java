@@ -39,7 +39,8 @@ public class DataManipulator {
 
     private void inicializaSqls() {
 
-        insertPesquisaSql = "insert into pesquisa_preco (id,concorrente,ean,secao,grupo,sub_grupo,descricao,preco,flag,id_arquivo,sincronizado,situacao) " +
+        insertPesquisaSql = "insert into pesquisa_preco (id,concorrente,ean,secao,grupo,sub_grupo,descricao,preco," +
+                "flag,id_arquivo,sincronizado,situacao) " +
                 "values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     }
@@ -71,7 +72,7 @@ public class DataManipulator {
 
         List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
 
-        String sql = "select * from " + TABLE_PESQUISA+" where concorrente='"+concorrente+"' and flag='S'";
+        String sql = "select * from " + TABLE_PESQUISA+" where concorrente='"+concorrente+"' and flag='S' and sincronizado='N'";
 
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -348,10 +349,31 @@ public class DataManipulator {
         return pp;
     }
 
-    public boolean updateProduto(String concorrenteS,String secaoS,String eanS,String preco,String situacao){
+    public boolean updateProdutoNaoEcontrado(String id){
+
+        String sql = "update  " + TABLE_PESQUISA + " set flag='S',situacao='S' "+
+                " where id='"+id+"'";
+
+        db.execSQL(sql);
+
+        return true;
+
+    }
+
+    public boolean updateProduto(String id,String preco,String situacao){
 
         String sql = "update  " + TABLE_PESQUISA + " set preco='"+preco+"', flag='S',situacao='" + situacao+"' "+
-                " where concorrente = '"+concorrenteS+"' and secao='"+secaoS+"' and ean='"+eanS+"'";
+                " where id='"+id+"'";
+
+        db.execSQL(sql);
+
+        return true;
+
+    }
+
+    public boolean updateProdutoSincronizado(String id){
+
+        String sql = "update " + TABLE_PESQUISA + " set sincronizado='S' where id='"+id+"'";
 
         db.execSQL(sql);
 
@@ -553,7 +575,7 @@ public class DataManipulator {
 
     // deleta entregas já sincronizadas
     public boolean deletaPesquisaSincronizadas() {
-        return db.delete(TABLE_PESQUISA, "sincronizado = S", null) > 0;
+        return db.delete(TABLE_PESQUISA, "sincronizado = 'S'", null) > 0;
     }
 
     public void limpaBaseDeDados() {

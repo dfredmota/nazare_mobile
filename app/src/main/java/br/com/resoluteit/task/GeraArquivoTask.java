@@ -88,9 +88,10 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
 
             generateFileOnSD(context,nomeArquivoOrigem,lista);
 
-        }
+            // gravar o arquivo na base de dados
+            ws.insertArquivoExportacao(nomeArquivoOrigem,((Integer)params[1]));
 
-        generateFileOnSD(context,nomeArquivoOrigem,lista);
+        }
 
         return true;
 
@@ -146,7 +147,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             // nesse caso como arquivo já existe vamos escrever o conteudo antigo no novo arquivo
             String conteudoArquivo = new String(array);
 
-            writer.println(conteudoArquivo);
+            writer.print(conteudoArquivo);
 
             for(PesquisaPreco pp : lista){
 

@@ -3,6 +3,7 @@ package br.com.resoluteit.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -19,6 +20,7 @@ import java.util.List;
 import br.com.resoluteit.adapter.SpinnerAdapter;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.sqllite.DataManipulator;
+import br.com.resoluteit.util.Data;
 import br.com.resoluteit.util.MascaraMonetaria;
 import resoluteit.com.br.R;
 
@@ -40,6 +42,8 @@ public class ProdutoAct extends AppCompatActivity {
     private PesquisaPreco   prod;
 
     private Button         btnCodigoBarras;
+
+    private Button         btnNaoEcontrado;
 
     String re = "";
 
@@ -113,12 +117,74 @@ public class ProdutoAct extends AppCompatActivity {
 
         lista.add("Normal");
         lista.add("Oferta");
-        lista.add("Não Encontrado");
         lista.add("Outros");
 
         SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.adapter_spinner, lista, getResources());
 
         spinnerSituacao.setAdapter(adapter);
+
+        btnNaoEcontrado = (Button) findViewById(R.id.btnNaoEcontrado);
+
+        btnNaoEcontrado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // verifica no shared preferences se marcou 3 produtos como não encontrado
+                Integer qtdNaoEncontrado = Data.getQuantidadeProdutoNaoEncontrado(PreferenceManager.getDefaultSharedPreferences(ProdutoAct.this));
+
+
+                Boolean mostrarAlerta = false;
+
+
+                if(qtdNaoEncontrado != null && qtdNaoEncontrado <= 3){
+
+                    qtdNaoEncontrado = qtdNaoEncontrado + 1;
+
+                    Data.insertProdutoNaoEcontrado(PreferenceManager.getDefaultSharedPreferences(ProdutoAct.this),qtdNaoEncontrado);
+
+                }else if(qtdNaoEncontrado != null && qtdNaoEncontrado >= 3){
+
+                    mostrarAlerta = true;
+                }
+
+
+
+                if(mostrarAlerta){
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProdutoAct.this);
+
+                    builder.setMessage("Você já marcou vários produtos como não encontrado. Por favor procure com cuidado!")
+                            .setCancelable(true)
+                            .setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                            Data.insertProdutoNaoEcontrado(PreferenceManager.getDefaultSharedPreferences(ProdutoAct.this),0);
+
+
+                                            dm.updateProdutoNaoEcontrado(prod.getId().toString());
+
+                                            Toast.makeText(ProdutoAct.this,"Produto Coletado com Sucesso!",Toast.LENGTH_LONG).show();
+
+                                            navToLista();
+                                        }
+                                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+
+                }else{
+
+                    dm.updateProdutoNaoEcontrado(prod.getId().toString());
+
+                    Toast.makeText(ProdutoAct.this,"Produto Coletado com Sucesso!",Toast.LENGTH_LONG).show();
+
+                    navToLista();
+                }
+
+            }
+        });
 
     }
 
@@ -188,13 +254,11 @@ public class ProdutoAct extends AppCompatActivity {
                     situacao="N";
                 if(situacao.equalsIgnoreCase("Oferta"))
                     situacao="P";
-                if(situacao.equalsIgnoreCase("Não Encontrado"))
-                    situacao="S";
                 if(situacao.equalsIgnoreCase("Outros"))
                     situacao="O";
 
 
-                dm.updateProduto(concorrenteS,secaoS,produtoS,preco,situacao);
+                dm.updateProduto(prod.getId().toString(),preco,situacao);
 
                 Toast.makeText(ProdutoAct.this,"Produto Coletado com Sucesso!",Toast.LENGTH_LONG).show();
 

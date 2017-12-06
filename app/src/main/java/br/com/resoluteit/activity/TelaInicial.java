@@ -58,11 +58,8 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     ProgressDialog ringProgressDialog;
 
-    final int MY_PERMISSIONS_REQUEST_CAMERA = 859;
+    Usuario usuarioLogado;
 
-    final int MY_PERMISSIONS_REQUEST_STORAGE = 869;
-
-    final int MY_PERMISSIONS_REQUEST_STORAGE_READ = 879;
 
 
     @Override
@@ -76,7 +73,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         data.setText(dataExtenso);
 
-        Usuario usuarioLogado = Data.getUsuario(PreferenceManager.getDefaultSharedPreferences(this));
+        usuarioLogado = Data.getUsuario(PreferenceManager.getDefaultSharedPreferences(this));
 
         getSupportActionBar().setTitle("Funcionário: "+usuarioLogado.getNome());
 
@@ -279,6 +276,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
             params[0] = this.listaSincronismo;
 
+            params[1] = usuarioLogado.getId();
 
             task.execute(params);
 
@@ -289,12 +287,16 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
     // TODO:sincroniza os registros para status = 'S'
     private void updateListaSincronismo(){
 
+        if(this.listaSincronismo != null && !this.listaSincronismo.isEmpty()){
 
+            for(PesquisaPreco pp : this.listaSincronismo){
 
+                this.dm.updateProdutoSincronizado(pp.getId().toString());
+            }
+
+        }
 
     }
-
-
 
     private void concorrenteFinalizado(){
 
@@ -327,6 +329,8 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
+                            updateListaSincronismo();
+
                             return;
                     }
                 });
@@ -335,6 +339,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
         alert.show();
 
     }
+
 
 
     private void msgNaoHaDadosSincronismo(){
@@ -356,86 +361,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     }
 
-    private void makePermissions() {
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.CAMERA)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CAMERA},
-                        MY_PERMISSIONS_REQUEST_CAMERA);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_STORAGE_READ);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-    }
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
