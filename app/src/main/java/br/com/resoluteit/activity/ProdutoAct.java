@@ -15,8 +15,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import br.com.resoluteit.adapter.SpinnerAdapter;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.sqllite.DataManipulator;
@@ -50,6 +55,10 @@ public class ProdutoAct extends AppCompatActivity {
     String preco = "";
 
     Spinner spinnerSituacao;
+
+    DateFormat formatador = DateFormat.getDateInstance(DateFormat.FULL, new Locale("pt", "BR"));
+
+    SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 
 
@@ -204,6 +213,13 @@ public class ProdutoAct extends AppCompatActivity {
 
             }else{
 
+                String dataExtenso = formatador.format(new Date());
+
+
+                //gravar o relatório de EAN divergente no sqllite
+                this.dm.insertRelatorio(this.prod.getConcorrente(),this.prod.getSecao(),
+                        this.prod.getDescricao(),this.prod.getEan(),
+                        re,fmt.format(new Date()),this.prod.getId().toString());
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProdutoAct.this);
 

@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
+import com.jcraft.jsch.HASH;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,18 +32,24 @@ public class DataManipulator {
 
     static final String TABLE_PESQUISA = "pesquisa_preco";
 
+    static final String TABLE_RELATORIO = "relatorio_ean";
+
     private SQLiteStatement insertStmtPesquisa = null;
 
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    private SQLiteStatement insertStmtRelatorio = null;
 
     String insertPesquisaSql;
 
+    String insertRelatorioSql;
 
     private void inicializaSqls() {
 
         insertPesquisaSql = "insert into pesquisa_preco (id,concorrente,ean,secao,grupo,sub_grupo,descricao,preco," +
                 "flag,id_arquivo,sincronizado,situacao) " +
                 "values (?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        insertRelatorioSql = "insert into relatorio_ean (concorrente,secao,descricao,ean,ean_cadastrado,data,id_produto,sincronizado) "+
+                "values(?,?,?,?,?,?,?,?)";
 
     }
     public DataManipulator(Context context) {
@@ -58,6 +66,7 @@ public class DataManipulator {
 
         // Inicializando os inserts
         this.insertStmtPesquisa = DataManipulator.db.compileStatement(insertPesquisaSql.toString());
+        this.insertStmtRelatorio = DataManipulator.db.compileStatement(insertRelatorioSql.toString());
 
     }
 
@@ -65,6 +74,7 @@ public class DataManipulator {
 
         openHelper.onUpgrade(db, DATABASE_VERSION, DATABASE_VERSION + 1);
         db.delete(TABLE_PESQUISA, null, null);
+        db.delete(TABLE_RELATORIO, null, null);
 
     }
 
@@ -381,6 +391,16 @@ public class DataManipulator {
 
     }
 
+    public boolean updateRelatorioSincronizado(String idProduto){
+
+        String sql = "update " + TABLE_RELATORIO + " set sincronizado='S' where id_produto='"+idProduto+"'";
+
+        db.execSQL(sql);
+
+        return true;
+
+    }
+
     public List<PesquisaPreco> listaPesquisaByConcorrenteAndSecao(String concorrenteParam,String secaoParam) {
 
         List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
@@ -551,6 +571,77 @@ public class DataManipulator {
 
     }
 
+    public List<HashMap<String,String>> listaRelatorioNaoSincronizado(String idProd) {
+
+        List<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+        String sql = "select * from " + TABLE_RELATORIO + " where id_produto = '"+idProd+"' and sincronizado='N'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    String concorrente = cursor.getString(0);
+                    String secao = cursor.getString(1);
+                    String descricao = cursor.getString(2);
+                    String ean = cursor.getString(3);
+                    String eanCadastrado = cursor.getString(4);
+                    String data = cursor.getString(5);
+                    String idProduto = cursor.getString(6);
+                    String sincronizado = cursor.getString(7);
+
+                    HashMap<String,String> map = new HashMap<String,String>();
+
+                    map.put("concorrente",concorrente);
+                    map.put("secao",secao);
+                    map.put("descricao",descricao);
+                    map.put("ean",ean);
+                    map.put("eanCadastrado",eanCadastrado);
+                    map.put("data",data);
+                    map.put("idProduto",idProduto);
+                    map.put("sincronizado",sincronizado);
+
+                    list.add(map);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        return list;
+    }
+
+    public long insertRelatorio(String concorrente,String secao,String descricao,String ean,String eanCadastrado,
+                                String data,String idProd) {
+
+        this.insertStmtRelatorio.bindString(1, concorrente);
+        this.insertStmtRelatorio.bindString(2, secao);
+        this.insertStmtRelatorio.bindString(3, descricao);
+        this.insertStmtRelatorio.bindString(4, ean);
+        this.insertStmtRelatorio.bindString(5, eanCadastrado);
+        this.insertStmtRelatorio.bindString(6, data);
+        this.insertStmtRelatorio.bindString(7, idProd);
+        this.insertStmtRelatorio.bindString(8, "N");
+
+
+        long id = this.insertStmtRelatorio.executeInsert();
+
+        return id;
+
+    }
+
 
     public long insertPesquisa(PesquisaPreco pp) {
 
@@ -578,6 +669,10 @@ public class DataManipulator {
         return db.delete(TABLE_PESQUISA, "sincronizado = 'S'", null) > 0;
     }
 
+    public boolean deletaRelatoriosSincronizados() {
+        return db.delete(TABLE_RELATORIO, "sincronizado = 'S'", null) > 0;
+    }
+
     public void limpaBaseDeDados() {
 
         // deleta alocações já sincronizadas
@@ -596,11 +691,16 @@ public class DataManipulator {
             db.execSQL("CREATE TABLE " + TABLE_PESQUISA + " (id TEXT,concorrente TEXT,ean TEXT,secao TEXT,grupo TEXT," +
                     "sub_grupo TEXT,descricao TEXT,preco TEXT,flag TEXT,id_arquivo TEXT,sincronizado TEXT,situacao TEXT)");
 
+            db.execSQL("CREATE TABLE " + TABLE_RELATORIO + " (concorrente TEXT,secao TEXT,descricao TEXT," +
+                    "ean TEXT,ean_cadastrado TEXT, data TEXT,id_produto TEXT, sincronizado TEXT)");
+
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_PESQUISA);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RELATORIO);
+
             onCreate(db);
         }
 

@@ -192,11 +192,57 @@ public class WsDao {
 
             ps = con.prepareStatement(sql);
 
-            ps.setString(0, nome);
-            ps.setInt(0, 1);
-            ps.setTimestamp(2, new Timestamp(new Date().getTime()));
-            ps.setString(3, "S");
-            ps.setInt(4, idUsuario);
+            ps.setString(1, nome);
+            ps.setInt(2, 1);
+            ps.setTimestamp(3, new Timestamp(new Date().getTime()));
+            ps.setString(4, "S");
+            ps.setInt(5, idUsuario);
+
+            System.out.println(ps);
+
+            rs = ps.executeQuery();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (con != null)
+                    con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+    public static void insertRelatorio(String concorrente,String secao,String descricao,
+                                       String ean,String eanCadastrado,String data) {
+
+        PreparedStatement ps = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        String sql = "insert into relatorio_ean(concorrente,secao,produto,ean,ean_cadastrado,data) values(?,?,?,?,?,?);";
+
+        try {
+
+            con = DataConnect.getConnection();
+
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, concorrente);
+            ps.setString(2, secao);
+            ps.setString(3, descricao);
+            ps.setString(4, ean);
+            ps.setString(5, eanCadastrado);
+            ps.setTimestamp(6, new Timestamp(new Date().getTime()));
 
             System.out.println(ps);
 

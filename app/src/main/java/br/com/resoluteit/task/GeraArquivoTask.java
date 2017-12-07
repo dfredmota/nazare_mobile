@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.HASH;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -22,12 +23,14 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.file.NoSuchFileException;
+import java.util.HashMap;
 import java.util.List;
 
 import br.com.resoluteit.delegate.GerarArquivoDelegate;
 import br.com.resoluteit.delegate.LoginDelegate;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.model.Usuario;
+import br.com.resoluteit.sqllite.DataManipulator;
 import br.com.resoluteit.ws.WsDao;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -47,10 +50,13 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
     JSch jsch = new JSch();
     Session session = null;
 
+    DataManipulator dm;
+
     public GeraArquivoTask(GerarArquivoDelegate activity,Context context){
 
         this.gerarArquivoDelegate = activity;
         this.context = context;
+        this.dm = new DataManipulator(context);
     }
 
     @Override
@@ -92,6 +98,31 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             ws.insertArquivoExportacao(nomeArquivoOrigem,((Integer)params[1]));
 
         }
+
+        for(PesquisaPreco pp : lista){
+
+            List<HashMap<String,String>> relatorios = this.dm.listaRelatorioNaoSincronizado(pp.getId().toString());
+
+            if(relatorios != null && !relatorios.isEmpty()){
+
+
+                for(HashMap<String,String> m : relatorios){
+
+
+                    //insere o relatorio no painel web e deleta do sqllite
+                    ws.insertRelatorio(m.get("concorrente"),m.get("secao"),m.get("descricao"),
+                            m.get("ean"),m.get("eanCadastrado"),m.get("data"));
+
+               }
+
+               // update nos relatorios
+                this.dm.updateRelatorioSincronizado(pp.getId().toString());
+
+            }
+
+        }
+
+        // sincroniza os relatorios de ean divergentes
 
         return true;
 

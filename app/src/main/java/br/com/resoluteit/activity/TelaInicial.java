@@ -347,7 +347,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
 
-        builder.setMessage("Concorrente Finalizado!")
+        builder.setMessage("Não há dados para exportar!")
                 .setCancelable(true).setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
