@@ -38,7 +38,7 @@
             android:background="@drawable/round_shape_edit"
             android:inputType="text"
             android:padding="3dp"
-            android:hint="Login"
+            android:hint="Matrícula"
             android:drawablePadding="12dip"
             android:drawableLeft="@drawable/login_icon"/>
 

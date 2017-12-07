@@ -10,9 +10,12 @@ public class DataConnect {
 
 	public static Connection getConnection() {
 		try {
+
+			// local 192.168.25.3
+			// produção
 			Class.forName("org.postgresql.Driver");
 			Connection con = DriverManager
-					.getConnection("jdbc:postgresql://192.168.43.118:5432/system32", "postgres", "Root@3873");
+					.getConnection("jdbc:postgresql://191.252.100.171:5432/postgres", "postgres", "Root@3873");
 			return con;
 		} catch (Exception ex) {
 			System.out.println("Database.getConnection() Error -->"
