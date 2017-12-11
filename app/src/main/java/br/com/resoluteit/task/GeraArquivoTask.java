@@ -178,23 +178,23 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             // nesse caso como arquivo já existe vamos escrever o conteudo antigo no novo arquivo
             String conteudoArquivo = new String(array);
 
-            writer.print(conteudoArquivo);
+            writer.write(conteudoArquivo);
 
             for(PesquisaPreco pp : lista){
 
                 String ean         = pp.getEan();
 
-                String concorrente = pp.getConcorrente().substring(0,1);
+                String concorrente = pp.getConcorrente().substring(0,2).replace("0","");
 
                 String preco       = completaPreco(pp.getPreco());
 
                 String situacao    = pp.getSituacao();
 
-                writer.print(ean);
-                writer.print(concorrente);
-                writer.print(concorrente);
-                writer.print(preco);
-                writer.println(situacao);
+                writer.write(ean);
+                writer.write(concorrente);
+                writer.write(preco);
+                writer.write(situacao);
+                writer.write("\r\n");
             }
 
             writer.flush();
@@ -226,7 +226,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
 
                 String ean         = pp.getEan();
 
-                String concorrente = pp.getConcorrente().substring(0,1);
+                String concorrente = pp.getConcorrente().substring(0,2).replace("0","");
 
                 String preco       = completaPreco(pp.getPreco());
 
@@ -234,9 +234,10 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
 
                 writer.print(ean);
                 writer.print(concorrente);
-                writer.print(concorrente);
                 writer.print(preco);
-                writer.println(situacao);
+                writer.print(situacao);
+                writer.write("\r\n");
+
             }
 
             writer.flush();
@@ -303,13 +304,13 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
 
+            sftpChannel.cd("/nazar");
+
             RandomAccessFile f = new RandomAccessFile(file, "r");
             byte[] b = new byte[(int)f.length()];
             f.readFully(b);
 
             InputStream myInputStream = new ByteArrayInputStream(b);
-
-            sftpChannel.cd("/nazar");
 
             sftpChannel.put(myInputStream, sFileName, ChannelSftp.OVERWRITE);
             sftpChannel.exit();
@@ -334,7 +335,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
 
         StringBuilder sPreco = new StringBuilder(preco);
 
-        while(sPreco.length() < 15) {
+        while(sPreco.length() < 16) {
 
             sPreco.insert(0, "0");
         }

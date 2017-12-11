@@ -361,7 +361,7 @@ public class DataManipulator {
 
     public boolean updateProdutoNaoEcontrado(String id){
 
-        String sql = "update  " + TABLE_PESQUISA + " set flag='S',situacao='S' "+
+        String sql = "update  " + TABLE_PESQUISA + " set flag='S',situacao='s' "+
                 " where id='"+id+"'";
 
         db.execSQL(sql);

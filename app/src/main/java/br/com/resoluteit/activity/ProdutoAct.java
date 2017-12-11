@@ -267,11 +267,11 @@ public class ProdutoAct extends AppCompatActivity {
                 String situacao = spinnerSituacao.getSelectedItem().toString();
 
                 if(situacao.equalsIgnoreCase("Normal"))
-                    situacao="N";
+                    situacao="n";
                 if(situacao.equalsIgnoreCase("Oferta"))
-                    situacao="P";
+                    situacao="p";
                 if(situacao.equalsIgnoreCase("Outros"))
-                    situacao="O";
+                    situacao="o";
 
 
                 dm.updateProduto(prod.getId().toString(),preco,situacao);
