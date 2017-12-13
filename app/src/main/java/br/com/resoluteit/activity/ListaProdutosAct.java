@@ -24,6 +24,8 @@ public class ListaProdutosAct extends AppCompatActivity {
 
     String produto;
 
+    Integer idProd;
+
     ListView listView;
 
     DataManipulator dm;
@@ -50,12 +52,41 @@ public class ListaProdutosAct extends AppCompatActivity {
 
             secao       = extras.getString("secao");
 
+            idProd      = extras.getInt("produtoColetado");
+
         }
 
 
         instanceObjects();
 
         this.lista = this.dm.listaPesquisaByConcorrenteAndSecao(concorrente,secao);
+
+        // verifica se veio parametro pra jogar pro final da lista
+
+        if(idProd != null && idProd != 0){
+
+            PesquisaPreco pp = this.dm.getProdutoById(idProd.toString());
+
+            // joga produto pro final da lista
+
+            for(PesquisaPreco p2 : this.lista){
+
+
+                if(p2.getId().equals(pp.getId())){
+
+                    this.lista.remove(p2);
+
+                    this.lista.add(pp);
+
+                    break;
+
+                }
+            }
+
+
+
+
+        }
 
         populateListaProdutos();
 
@@ -95,18 +126,15 @@ public class ListaProdutosAct extends AppCompatActivity {
         secaoT.setText("Seção:"+secao);
 
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           final int pos, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                PesquisaPreco pp = (PesquisaPreco)listView.getAdapter().getItem(pos);
+                PesquisaPreco pp = (PesquisaPreco)listView.getAdapter().getItem(i);
 
                 produto = pp.getEan();
 
                 navToProd();
-
-                return true;
             }
         });
 

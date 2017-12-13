@@ -2,6 +2,7 @@ package br.com.resoluteit.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -60,6 +61,7 @@ public class ProdutoAct extends AppCompatActivity {
 
     SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+    SharedPreferences sh;
 
 
     @Override
@@ -84,6 +86,8 @@ public class ProdutoAct extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Nazare Mobile");
+
+        sh = PreferenceManager.getDefaultSharedPreferences(this);
 
 
     }
@@ -175,7 +179,7 @@ public class ProdutoAct extends AppCompatActivity {
 
                                             Toast.makeText(ProdutoAct.this,"Produto Coletado com Sucesso!",Toast.LENGTH_LONG).show();
 
-                                            navToLista();
+                                            navToLista(false);
                                         }
                                     });
 
@@ -189,7 +193,7 @@ public class ProdutoAct extends AppCompatActivity {
 
                     Toast.makeText(ProdutoAct.this,"Produto Coletado com Sucesso!",Toast.LENGTH_LONG).show();
 
-                    navToLista();
+                    navToLista(false);
                 }
 
             }
@@ -206,12 +210,12 @@ public class ProdutoAct extends AppCompatActivity {
             re = scanResult.getContents();
 
             // verifica se o codigo de barras é igual se for abre o preço
-            if(re.equalsIgnoreCase(this.prod.getEan())){
+            if(re != null && re.equalsIgnoreCase(this.prod.getEan())){
 
                 dialogPreco();
 
 
-            }else{
+            }else if(re != null){
 
                 String dataExtenso = formatador.format(new Date());
 
@@ -253,7 +257,7 @@ public class ProdutoAct extends AppCompatActivity {
         input.setWidth(30);
         alert.setMessage("Digite o preço do produto:");
         alert.setView(input);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         input.addTextChangedListener(new MascaraMonetaria(input));
 
@@ -278,7 +282,7 @@ public class ProdutoAct extends AppCompatActivity {
 
                 Toast.makeText(ProdutoAct.this,"Produto Coletado com Sucesso!",Toast.LENGTH_LONG).show();
 
-                navToLista();
+                navToLista(true);
 
             }
         });
@@ -294,7 +298,7 @@ public class ProdutoAct extends AppCompatActivity {
     }
 
 
-    private void navToLista() {
+    private void navToLista(Boolean coletado) {
 
         Intent i = new Intent(this, ListaProdutosAct.class);
 
@@ -305,6 +309,9 @@ public class ProdutoAct extends AppCompatActivity {
         i.putExtra("concorrente",concorrenteS);
 
         i.putExtra("secao",secaoS);
+
+        if(coletado)
+        i.putExtra("produtoColetado",this.prod.getId());
 
         this.startActivity(i);
 
@@ -328,7 +335,23 @@ public class ProdutoAct extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        navToHome();
+
+        navToSecao();
+    }
+
+
+    private void navToSecao() {
+
+        Intent i = new Intent(this, SecaoAct.class);
+
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        i.addCategory(Intent.CATEGORY_HOME);
+
+        i.putExtra("concorrente",concorrenteS);
+
+        this.startActivity(i);
+
     }
 
     private void navToHome(){

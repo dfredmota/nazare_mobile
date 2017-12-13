@@ -305,6 +305,59 @@ public class DataManipulator {
         return list;
     }
 
+    public PesquisaPreco getProdutoById(String id) {
+
+        PesquisaPreco pp = new PesquisaPreco();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where id = '"+id+"'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+
+
+                String idProd = cursor.getString(0);
+                String concorrente = cursor.getString(1);
+                String ean = cursor.getString(2);
+                String secao = cursor.getString(3);
+                String grupo = cursor.getString(4);
+                String sub_grupo = cursor.getString(5);
+                String descricao = cursor.getString(6);
+                String preco = cursor.getString(7);
+                String flag = cursor.getString(8);
+                String id_arquivo = cursor.getString(9);
+                String sincronizado = cursor.getString(10);
+                String situacao = cursor.getString(11);
+
+                pp.setId(Integer.parseInt(idProd));
+                pp.setConcorrente(concorrente);
+                pp.setEan(ean);
+                pp.setSecao(secao);
+                pp.setGrupo(grupo);
+                pp.setSubGrupo(sub_grupo);
+                pp.setDescricao(descricao);
+                pp.setPreco(preco);
+                pp.setFlag(flag);
+                pp.setIdArquivo(Integer.parseInt(id_arquivo));
+                pp.setSincronizado(sincronizado);
+                pp.setSituacao(situacao);
+
+            }
+
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        return pp;
+    }
+
     public PesquisaPreco retornaProduto(String concorrenteParam,String secaoParam,String eanParam) {
 
         PesquisaPreco pp = new PesquisaPreco();
@@ -405,7 +458,8 @@ public class DataManipulator {
 
         List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
 
-        String sql = "select * from " + TABLE_PESQUISA + " where concorrente = '"+concorrenteParam+"' and secao='"+secaoParam+"'";
+        String sql = "select * from " + TABLE_PESQUISA + " where concorrente = '"+concorrenteParam+"' and secao='"+secaoParam+"' " +
+                "order by flag asc";
 
         Cursor cursor = db.rawQuery(sql, null);
 
