@@ -466,7 +466,9 @@ public class DataManipulator {
         try {
 
             int x = 0;
+
             if (cursor.moveToFirst()) {
+
                 do {
 
 
