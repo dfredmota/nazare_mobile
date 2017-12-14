@@ -78,11 +78,11 @@ public class DataManipulator {
 
     }
 
-    public List<PesquisaPreco> listaPraSincronizar(String concorrente) {
+    public List<PesquisaPreco> listaPraSincronizar() {
 
         List<PesquisaPreco> list = new ArrayList<PesquisaPreco>();
 
-        String sql = "select * from " + TABLE_PESQUISA+" where concorrente='"+concorrente+"' and flag='S' and sincronizado='N'";
+        String sql = "select * from " + TABLE_PESQUISA+" where flag='S' and sincronizado='N'";
 
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -588,6 +588,44 @@ public class DataManipulator {
         return list;
     }
 
+    public Boolean verificaSeAindaHaProdutosNaoLidos() {
+
+
+        List<String> list = new ArrayList<String>();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where flag='N'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String id = cursor.getString(0);
+
+                    list.add(id);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        if(list.size() > 0)
+            return true;
+        else
+            return false;
+
+    }
+
     public Boolean verificaSessaoCompleta(String concorrente,String secao) {
 
 
@@ -733,6 +771,7 @@ public class DataManipulator {
 
         // deleta alocações já sincronizadas
         deletaPesquisaSincronizadas();
+        deletaRelatoriosSincronizados();
     }
 
 

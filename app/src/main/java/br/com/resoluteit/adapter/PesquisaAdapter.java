@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -65,6 +66,7 @@ public class PesquisaAdapter extends BaseAdapter {
         TextView descricao;
         TextView flag;
         TextView situacao;
+        ImageView imageConfirm;
     }
 
 
@@ -80,12 +82,16 @@ public class PesquisaAdapter extends BaseAdapter {
         holder.descricao = (TextView) convertView.findViewById(R.id.descricao);
         holder.flag = (TextView) convertView.findViewById(R.id.flag);
         holder.situacao = (TextView) convertView.findViewById(R.id.situacao);
+        holder.imageConfirm = (ImageView) convertView.findViewById(R.id.confirmImage);
+
 
         holder.codigo.setText(lista.get(position).getEan());
         holder.descricao.setText(lista.get(position).getDescricao());
 
-        if (lista.get(position).getFlag() != null && lista.get(position).getFlag().equalsIgnoreCase("S"))
+        if (lista.get(position).getFlag() != null && lista.get(position).getFlag().equalsIgnoreCase("S")) {
             holder.flag.setText("Sim");
+            holder.imageConfirm.setVisibility(View.VISIBLE);
+        }
         else if (lista.get(position).getFlag() != null && lista.get(position).getFlag().equalsIgnoreCase("N"))
             holder.flag.setText("Não");
 

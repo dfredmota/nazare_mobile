@@ -192,8 +192,6 @@ public class ListaProdutosAct extends AppCompatActivity {
 
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        i.addCategory(Intent.CATEGORY_HOME);
-
         i.putExtra("concorrente",concorrente);
 
         this.startActivity(i);
@@ -209,7 +207,7 @@ public class ListaProdutosAct extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            navToHome();
+            navToSecao();
         }
 
         return super.onOptionsItemSelected(item);
@@ -218,7 +216,7 @@ public class ListaProdutosAct extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        navToHome();
+        navToSecao();
     }
 
     private void navToHome(){
@@ -232,4 +230,6 @@ public class ListaProdutosAct extends AppCompatActivity {
         this.startActivity(i);
 
     }
+
+
 }

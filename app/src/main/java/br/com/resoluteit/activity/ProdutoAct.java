@@ -326,7 +326,7 @@ public class ProdutoAct extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            navToHome();
+            navToSecao();
         }
 
         return super.onOptionsItemSelected(item);

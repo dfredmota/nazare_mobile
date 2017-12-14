@@ -196,6 +196,18 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     }
 
+    private void navToHome() {
+
+        Intent i = new Intent(this, TelaInicial.class);
+
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        i.addCategory(Intent.CATEGORY_HOME);
+
+        this.startActivity(i);
+
+    }
+
     private void navToLogin() {
 
         Intent i = new Intent(this, SplashScreen.class);
@@ -241,15 +253,14 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
 
-        builder.setMessage("Existem Seções pendentes nesse concorrente!")
+        builder.setMessage("Existem Concorrentes pendentes de Pesquisa, Deseja enviar pesquisa parcial?")
                 .setCancelable(true)
                 .setNegativeButton("Cancelar",null)
-                .setPositiveButton("Enviar Pesquisa Parcial",
+                .setPositiveButton("Enviar",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
                                 populaListaSincronismo();
-
 
                             }
                         });
@@ -261,7 +272,12 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     private void populaListaSincronismo(){
 
-        this.listaSincronismo = this.dm.listaPraSincronizar(spinnerConcorrente.getSelectedItem().toString());
+        //TODO: finaliza por concorrente
+        //this.listaSincronismo = this.dm.listaPraSincronizar(spinnerConcorrente.getSelectedItem().toString());
+
+
+        this.listaSincronismo = this.dm.listaPraSincronizar();
+
 
         if(this.listaSincronismo == null || this.listaSincronismo.isEmpty()){
 
@@ -296,6 +312,57 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         }
 
+
+        //verifica se ainda existem itens pendentes
+        Boolean aindaTemItens = this.dm.verificaSeAindaHaProdutosNaoLidos();
+
+
+        if(aindaTemItens){
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+            builder.setMessage("Arquivo foi gerado parcialmente, mais ainda existem produtos não coletados!")
+                    .setCancelable(false).setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            return;
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+
+        }
+
+        // se todos os itens da pesquisa tiverem sido lidos apagar todos os sincronizados
+        else{
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+            builder.setMessage("Arquivo Completo Gerado Com Sucesso, Os dados dessa pesquisa serão apagados do Aplicativo!")
+                    .setCancelable(false).setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            limpaBaseDeDadosApp();
+
+                            navToHome();
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        }
+
+    }
+
+    private void limpaBaseDeDadosApp(){
+
+        this.dm.limpaBaseDeDados();
     }
 
     private void concorrenteFinalizado(){
