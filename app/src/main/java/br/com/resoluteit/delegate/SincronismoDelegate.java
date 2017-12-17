@@ -12,7 +12,7 @@ public interface SincronismoDelegate {
 
     public void sincronizou(List<PesquisaPreco> lista);
 
-    void carregaDialog();
+    void carregaDialogSincronismo();
 
 
 }

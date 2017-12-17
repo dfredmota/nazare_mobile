@@ -626,6 +626,83 @@ public class DataManipulator {
 
     }
 
+
+    public Boolean verificaPesquisaCompleta() {
+
+
+        List<String> list = new ArrayList<String>();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where flag='N'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String id = cursor.getString(0);
+
+                    list.add(id);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        if(list.size() == 0)
+            return true;
+        else
+            return false;
+
+    }
+
+    public Boolean verificaConcorrenteCompleto(String concorrente) {
+
+
+        List<String> list = new ArrayList<String>();
+
+        String sql = "select * from " + TABLE_PESQUISA + " where concorrente='"+concorrente+"' and flag='N'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+
+        try {
+
+            int x = 0;
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String id = cursor.getString(0);
+
+                    list.add(id);
+
+                    x = x + 1;
+
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+        }
+
+        if(list.size() == 0)
+            return true;
+        else
+            return false;
+
+    }
+
     public Boolean verificaSessaoCompleta(String concorrente,String secao) {
 
 

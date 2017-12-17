@@ -81,7 +81,7 @@ public class SplashScreen extends AppCompatActivity implements SincronismoDelega
     }
 
     @Override
-    public void carregaDialog() {
+    public void carregaDialogSincronismo() {
         ringProgressDialog = ProgressDialog.show(this, "Sincronizando Dados...", "");
         ringProgressDialog.show();
     }

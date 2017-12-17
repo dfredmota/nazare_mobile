@@ -28,14 +28,16 @@ import java.util.Locale;
 
 import br.com.resoluteit.adapter.SpinnerAdapter;
 import br.com.resoluteit.delegate.GerarArquivoDelegate;
+import br.com.resoluteit.delegate.SincronismoDelegate;
 import br.com.resoluteit.model.PesquisaPreco;
 import br.com.resoluteit.model.Usuario;
 import br.com.resoluteit.sqllite.DataManipulator;
 import br.com.resoluteit.task.GeraArquivoTask;
+import br.com.resoluteit.task.SincronizarTask;
 import br.com.resoluteit.util.Data;
 import resoluteit.com.br.R;
 
-public class TelaInicial extends AppCompatActivity implements GerarArquivoDelegate {
+public class TelaInicial extends AppCompatActivity implements GerarArquivoDelegate,SincronismoDelegate {
 
     DateFormat formatador = DateFormat.getDateInstance(DateFormat.FULL, new Locale("pt", "BR"));
 
@@ -54,11 +56,19 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     private Button   btnSair;
 
+    private Button   btnSincronizar;
+
     private List<PesquisaPreco> listaSincronismo;
 
     ProgressDialog ringProgressDialog;
 
     Usuario usuarioLogado;
+
+    Boolean pesquisaCompleta;
+
+    String pesquisarFinalizados="";
+
+    Boolean sincronizarSemSair = false;
 
 
 
@@ -66,6 +76,14 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial);
+
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+
+            pesquisarFinalizados = extras.getString("pesquisarFinalizados");
+        }
 
         instanceObjects();
 
@@ -84,11 +102,29 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
+
+        if(pesquisarFinalizados != null && pesquisarFinalizados.equalsIgnoreCase("S")) {
+
+            // verifica se pesquisa esta completa
+            pesquisaCompleta = this.dm.verificaPesquisaCompleta();
+
+            if (pesquisaCompleta) {
+
+                pesquisaCompleta();
+            }
+        }
+
     }
 
     @Override
     public void carregaDialog() {
         ringProgressDialog= ProgressDialog.show(this,"Realizando exportação dos dados!...","");
+        ringProgressDialog.show();
+    }
+
+    @Override
+    public void carregaDialogSincronismo() {
+        ringProgressDialog= ProgressDialog.show(this,"Sincronizando Dados!...","");
         ringProgressDialog.show();
     }
 
@@ -100,6 +136,86 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
         if(sucesso){
 
             mensagemArquivoSucesso();
+        }
+
+    }
+
+    @Override
+    public void sincronizou(List<PesquisaPreco> lista) {
+
+        ringProgressDialog.dismiss();
+
+        if (lista != null && !lista.isEmpty()) {
+
+
+            for (PesquisaPreco pp : lista) {
+
+                this.dm.insertPesquisa(pp);
+
+            }
+        }
+
+
+        if(lista != null && !lista.isEmpty()){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+            builder.setMessage("Dados sincronizados com sucesso!")
+                    .setCancelable(true)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    navToHome();
+                                }
+                            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        }else{
+
+            if(sincronizarSemSair){
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+                builder.setMessage("Não há dados para sincronismo!")
+                        .setCancelable(true)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        return;
+                                    }
+                                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+
+            }else{
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+                builder.setMessage("Não há dados para sincronismo!")
+                        .setCancelable(true)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        TelaInicial.this.finish();
+                                        System.exit(0);
+                                    }
+                                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+            }
+
+
         }
 
     }
@@ -179,6 +295,33 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
                 sair();
             }
         });
+
+        btnSincronizar = (Button) findViewById(R.id.btnSincronizar);
+
+        btnSincronizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+                builder.setMessage("Existem pesquisas não finalizadas, deseja carregar nova pesquisa?")
+                        .setCancelable(true)
+                        .setNegativeButton("Voltar",null)
+                        .setPositiveButton("Incluir",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        sincronizarSemSair = true;
+
+                                        sincronizar();
+
+                                    }
+                                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
     }
 
 
@@ -195,6 +338,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
         this.startActivity(i);
 
     }
+
 
     private void navToHome() {
 
@@ -248,6 +392,43 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
     }
 
+    private void sincronizar() {
+
+
+        SincronizarTask task = new SincronizarTask(this);
+
+        Integer idUsuario = usuarioLogado.getId();
+
+        String params[] = new String[2];
+
+        params[0] = idUsuario.toString();
+
+        task.execute(params);
+
+    }
+
+    private void pesquisaCompleta(){
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+
+        builder.setMessage("A Pesquisa está completa. Deseja enviar a pesquisa?")
+                .setCancelable(true)
+                .setNegativeButton("Cancelar",null)
+                .setPositiveButton("Enviar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                populaListaSincronismo();
+
+                            }
+                        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
     private void concorrenteNaoFinalizado(){
 
 
@@ -274,7 +455,6 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         //TODO: finaliza por concorrente
         //this.listaSincronismo = this.dm.listaPraSincronizar(spinnerConcorrente.getSelectedItem().toString());
-
 
         this.listaSincronismo = this.dm.listaPraSincronizar();
 

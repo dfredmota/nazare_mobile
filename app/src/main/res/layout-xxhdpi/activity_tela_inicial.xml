@@ -91,16 +91,28 @@
             android:text="Finalizar"
             android:textColor="@color/white" />
 
+
         <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="259dp"
+            android:id="@+id/btnSincronizar"
+            android:layout_width="256dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnFinalizar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_shape_btn"
-            android:text="Mudar Usuário"
+            android:text="Sincronizar"
             android:textColor="@color/white" />
+
+        <Button
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:text="Mudar Usuário"
+            android:textColor="@color/white"
+            android:layout_marginTop="15dp"
+            android:id="@+id/btnLogout"
+            android:background="@drawable/round_shape_btn"
+            android:layout_below="@+id/btnSincronizar"
+            android:layout_centerHorizontal="true" />
 
         <Button
             android:id="@+id/btnSair"

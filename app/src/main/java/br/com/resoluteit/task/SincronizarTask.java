@@ -58,7 +58,7 @@ public class SincronizarTask extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPreExecute() {
-        this.sincronizeDelegate.carregaDialog();
+        this.sincronizeDelegate.carregaDialogSincronismo();
     }
 
     @Override

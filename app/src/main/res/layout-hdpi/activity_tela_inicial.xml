@@ -92,10 +92,21 @@
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/btnLogout"
+            android:id="@+id/btnSincronizar"
             android:layout_width="222dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnFinalizar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/round_shape_btn"
+            android:text="Sincronizar"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnSincronizar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_shape_btn"
