@@ -113,11 +113,23 @@
             android:text="Mudar Usuário"
             android:textColor="@color/white" />
 
+
         <Button
-            android:id="@+id/btnSair"
-            android:layout_width="220dp"
+            android:id="@+id/btnCheckin"
+            android:layout_width="221dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnLogout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/round_shape_btn"
+            android:text="Check-In"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnSair"
+            android:layout_width="221dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnCheckin"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_shape_btn"

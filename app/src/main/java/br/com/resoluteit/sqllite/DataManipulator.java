@@ -836,6 +836,15 @@ public class DataManipulator {
     }
 
     // deleta entregas já sincronizadas
+    public boolean deleteAll() {
+        db.delete(TABLE_PESQUISA,null,null);
+        db.delete(TABLE_RELATORIO,null,null);
+        return true;
+    }
+
+
+
+    // deleta entregas já sincronizadas
     public boolean deletaPesquisaSincronizadas() {
         return db.delete(TABLE_PESQUISA, "sincronizado = 'S'", null) > 0;
     }

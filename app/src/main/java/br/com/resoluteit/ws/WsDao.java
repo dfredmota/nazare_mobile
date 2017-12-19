@@ -222,6 +222,51 @@ public class WsDao {
 
     }
 
+    public static void insertCheckin(String idUsuario,String latitude,String longitude,
+                                     String endereco) {
+
+        PreparedStatement ps = null;
+        Connection con = null;
+        ResultSet rs = null;
+
+        String sql = "insert into checkin(id_usuario,latitude,longitude,endereco,data_hora) values(?,?,?,?,?);";
+
+        try {
+
+            con = DataConnect.getConnection();
+
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, Integer.parseInt(idUsuario));
+            ps.setString(2, latitude);
+            ps.setString(3, longitude);
+            ps.setString(4, endereco);
+            ps.setTimestamp(5, new Timestamp(new Date().getTime()));
+
+            System.out.println(ps);
+
+            rs = ps.executeQuery();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (con != null)
+                    con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
     public static void insertRelatorio(String concorrente,String secao,String descricao,
                                        String ean,String eanCadastrado,String data) {
 
