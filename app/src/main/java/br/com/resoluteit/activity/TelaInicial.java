@@ -98,6 +98,9 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
     String endereco = "";
 
 
+    List<String> listaConcorrentes;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -434,40 +437,43 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         this.dm = new DataManipulator(this);
 
+        data = (TextView) findViewById(R.id.txt_data);
+
+        spinnerConcorrente = (Spinner) findViewById(R.id.spinnerConcorrente);
+
+        btnSelecionar = (Button) findViewById(R.id.btnSelecionar);
+
+        btnFinalizar = (Button) findViewById(R.id.btnFinalizar);
+
+        btnLogoff  = (Button) findViewById(R.id.btnLogout);
+
+        btnSair = (Button) findViewById(R.id.btnSair);
+
+        btnSincronizar = (Button) findViewById(R.id.btnSincronizar);
+
+        btnCheckin = (Button) findViewById(R.id.btnCheckin);
+
         //recupera os concorrentes
 
-        List<PesquisaPreco> all = this.dm.all();
-
-        List<String> listaConcorrentes = this.dm.listaConcorrentes();
+        listaConcorrentes = this.dm.listaConcorrentes();
 
         if(listaConcorrentes == null || listaConcorrentes.isEmpty()){
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
+            btnSelecionar.setVisibility(View.GONE);
+            btnFinalizar.setVisibility(View.GONE);
 
-            builder.setMessage("Não há dados para sincronismo!")
-                    .setCancelable(true)
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+        }else{
 
-                                        TelaInicial.this.finish();
-                                        System.exit(0);
-                                }
-                            });
+            SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.adapter_spinner, listaConcorrentes, getResources());
 
-            AlertDialog alert = builder.create();
-            alert.show();
+            spinnerConcorrente.setAdapter(adapter);
+
+            btnSelecionar.setVisibility(View.VISIBLE);
+            btnFinalizar.setVisibility(View.VISIBLE);
+
 
         }
 
-        data = (TextView) findViewById(R.id.txt_data);
-
-        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.adapter_spinner, listaConcorrentes, getResources());
-
-        spinnerConcorrente = (Spinner) findViewById(R.id.spinnerConcorrente);
-        spinnerConcorrente.setAdapter(adapter);
-
-        btnSelecionar = (Button) findViewById(R.id.btnSelecionar);
 
         btnSelecionar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -476,7 +482,6 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
             }
         });
 
-        btnFinalizar = (Button) findViewById(R.id.btnFinalizar);
 
         btnFinalizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -486,7 +491,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
             }
         });
 
-        btnLogoff  = (Button) findViewById(R.id.btnLogout);
+
 
         btnLogoff.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -496,7 +501,6 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
             }
         });
 
-        btnSair = (Button) findViewById(R.id.btnSair);
 
         btnSair.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -506,7 +510,6 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
             }
         });
 
-        btnSincronizar = (Button) findViewById(R.id.btnSincronizar);
 
         btnSincronizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -514,10 +517,12 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(TelaInicial.this);
 
-                builder.setMessage("Existem pesquisas não finalizadas, Os dados da pesquisa anterior serão apagados." +
+                if (listaConcorrentes != null && !listaConcorrentes.isEmpty()){
+
+                    builder.setMessage("Existem pesquisas não finalizadas, Os dados da pesquisa anterior serão apagados." +
                         " deseja carregar nova pesquisa?")
                         .setCancelable(true)
-                        .setNegativeButton("Voltar",null)
+                        .setNegativeButton("Voltar", null)
                         .setPositiveButton("Incluir",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
@@ -531,11 +536,34 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
                 AlertDialog alert = builder.create();
                 alert.show();
+
+            }else{
+
+                    builder.setMessage("deseja carregar nova pesquisa?")
+                            .setCancelable(true)
+                            .setNegativeButton("Voltar", null)
+                            .setPositiveButton("Incluir",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                            sincronizarSemSair = true;
+
+                                            limparBaseESincronizar();
+
+                                        }
+                                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+
+                }
+
+
             }
         });
 
 
-        btnCheckin = (Button) findViewById(R.id.btnCheckin);
 
         btnCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -620,8 +648,6 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         i.addCategory(Intent.CATEGORY_HOME);
 
-        i.putExtra("concorrente",spinnerConcorrente.getSelectedItem().toString());
-
         this.startActivity(i);
 
     }
@@ -674,7 +700,7 @@ public class TelaInicial extends AppCompatActivity implements GerarArquivoDelega
 
         builder.setMessage("A Pesquisa está completa. Deseja enviar a pesquisa?")
                 .setCancelable(true)
-                .setNegativeButton("Cancelar",null)
+                .setNegativeButton("Continuar na pesquisa",null)
                 .setPositiveButton("Enviar",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {

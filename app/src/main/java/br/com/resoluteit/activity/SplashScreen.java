@@ -40,7 +40,7 @@ public class SplashScreen extends AppCompatActivity implements SincronismoDelega
 
         } else {
 
-            sincronizar();
+           navToHome();
 
         }
 
@@ -77,7 +77,7 @@ public class SplashScreen extends AppCompatActivity implements SincronismoDelega
             }
         }
 
-        navToHome();
+
     }
 
     @Override
