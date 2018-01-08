@@ -63,7 +63,6 @@ public class ProdutoAct extends AppCompatActivity {
 
     SharedPreferences sh;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,19 +109,39 @@ public class ProdutoAct extends AppCompatActivity {
 
         this.prod = this.dm.retornaProduto(concorrenteS,secaoS,produtoS);
 
+
+        Boolean isEanInterno = verificaEanInterno(this.prod.getEan());
+
+
         produto.setText("Produto: "+this.prod.getDescricao());
 
         btnCodigoBarras = (Button) findViewById(R.id.btnCodigoBarras);
 
-        btnCodigoBarras.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if(isEanInterno){
 
-                IntentIntegrator integrator = new IntentIntegrator(ProdutoAct.this);
-                integrator.setMessage("Posicione corretamente o código de barras...");
-                integrator.initiateScan();
-            }
-        });
+            btnCodigoBarras.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    dialogPreco();
+                }
+            });
+
+
+        }else {
+
+            btnCodigoBarras.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    IntentIntegrator integrator = new IntentIntegrator(ProdutoAct.this);
+                    integrator.setMessage("Posicione corretamente o código de barras...");
+                    integrator.initiateScan();
+                }
+            });
+        }
+
+
 
         spinnerSituacao = (Spinner) findViewById(R.id.spinnerSituacao);
 
@@ -198,6 +217,49 @@ public class ProdutoAct extends AppCompatActivity {
 
             }
         });
+
+    }
+
+
+    private boolean verificaEanInterno(String ean){
+
+
+        // substring 5
+        String eanInterno = "30000";
+
+        // substring 9
+        String eanInternoPesado = "000000000";
+
+        // substring 10
+        String eanInternoVelocity = "0000000000";
+
+        // substring 11
+        String eanInternoVelocity2 = "00000000000";
+
+
+        if(eanInterno.equals(ean.substring(0,5))){
+
+            return true;
+        }
+
+        if(eanInternoPesado.equals(ean.substring(0,9))){
+
+            return true;
+        }
+
+        if(eanInternoVelocity.equals(ean.substring(0,10))){
+
+            return true;
+        }
+
+        if(eanInternoVelocity2.equals(ean.substring(0,11))){
+
+            return true;
+        }
+
+
+        return false;
+
 
     }
 
