@@ -25,14 +25,17 @@ public class WsDao {
 
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static String getFileName(Integer idArquivo) {
+    public static String[] getFileName(Integer idArquivo) {
         Connection con = null;
         PreparedStatement ps = null;
-        String retorno = "";
+        String retornoNome = "";
+        String retornoNomePesquisa = "";
+        String retornoDia = "";
+        String[] retorno = new String[3];
 
         try {
             con = DataConnect.getConnection();
-            ps = con.prepareStatement("Select nome from arquivos where id = ?");
+            ps = con.prepareStatement("Select nome,nome_pesquisa,dia from arquivos where id = ?");
             ps.setInt(1, idArquivo);
             ResultSet rs = ps.executeQuery();
 
@@ -40,9 +43,15 @@ public class WsDao {
 
             if (rs.next()) {
 
-                retorno = rs.getString("nome");
+                retornoNome = rs.getString("nome");
+                retornoNomePesquisa = rs.getString("nome_pesquisa");
+                retornoDia = rs.getString("dia");
 
             }
+
+            retorno[0] = retornoNome;
+            retorno[1] = retornoNomePesquisa;
+            retorno[2] = retornoDia;
 
         } catch (SQLException ex) {
             System.out.println("Login error -->" + ex.getMessage());
@@ -90,7 +99,7 @@ public class WsDao {
     }
 
 
-    public static List<PesquisaPreco> sincronizaPesquisaPreco() {
+    public static List<PesquisaPreco> sincronizaPesquisaPreco(Integer idUsuario,String day) {
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -98,7 +107,8 @@ public class WsDao {
 
 
         String sql = "select pp.id,pp.concorrente,pp.ean,pp.secao,pp.grupo,pp.sub_grupo,pp.descricao,pp.preco,pp.flag,pp.id_arquivo\n" +
-                " from pesquisa_preco pp,arquivos ar where pp.id_arquivo = ar.id and ar.sincronizado = 'N'";
+                " from pesquisa_preco pp,arquivos ar where pp.id_arquivo = ar.id and ar.sincronizado = 'N' and ar.id_usuario ="+idUsuario+" "
+                +" and ar.dia='"+day+"'";
 
         try {
 
@@ -178,13 +188,13 @@ public class WsDao {
     }
 
 
-    public static void insertArquivoExportacao(String nome, Integer idUsuario) {
+    public static void insertArquivoExportacao(String nome, Integer idUsuario,String nomePesquisa,String dia) {
 
         PreparedStatement ps = null;
         Connection con = null;
         ResultSet rs = null;
 
-        String sql = "insert into arquivos(nome,tipo_arquivo,data,sincronizado,id_usuario) values(?,?,?,?,?);";
+        String sql = "insert into arquivos(nome,tipo_arquivo,data,sincronizado,id_usuario,nome_pesquisa,dia) values(?,?,?,?,?,?,?);";
 
         try {
 
@@ -197,6 +207,8 @@ public class WsDao {
             ps.setTimestamp(3, new Timestamp(new Date().getTime()));
             ps.setString(4, "S");
             ps.setInt(5, idUsuario);
+            ps.setString(6, nomePesquisa);
+            ps.setString(7, dia);
 
             System.out.println(ps);
 

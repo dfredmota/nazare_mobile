@@ -75,13 +75,14 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
 
         WsDao ws = new WsDao();
 
-        String nomeArquivoOrigem = ws.getFileName(lista.get(0).getIdArquivo());
+        String[] arrayNomes = ws.getFileName(lista.get(0).getIdArquivo());
+
+        String nomeArquivoOrigem = arrayNomes[0];
 
         nomeArquivoOrigem = "retorno_"+nomeArquivoOrigem;
 
         // primeiro vamos verificar se esse arquivo já existe no ftp
         ByteArrayOutputStream arquivo = getArquivo(nomeArquivoOrigem);
-
 
         // arquivo existe vamos escrever as pesquisa no final do mesmo
         if(arquivo != null){
@@ -95,7 +96,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             generateFileOnSD(context,nomeArquivoOrigem,lista);
 
             // gravar o arquivo na base de dados
-            ws.insertArquivoExportacao(nomeArquivoOrigem,((Integer)params[1]));
+            ws.insertArquivoExportacao(nomeArquivoOrigem,((Integer)params[1]),arrayNomes[1],arrayNomes[2]);
 
         }
 
@@ -145,10 +146,10 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
 
         try{
 
-        session = jsch.getSession("root", "191.252.100.171", 22);
-        session.setConfig("StrictHostKeyChecking", "no");
-        session.setPassword("Valente@3873");
-        session.connect();
+            session = jsch.getSession("root", "189.89.227.199",8820);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setPassword("nazare$01");
+            session.connect();
 
         return true;
 
@@ -262,7 +263,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
 
-            sftpChannel.cd("/nazar");
+            sftpChannel.cd("/home/nazare/");
 
             InputStream in = sftpChannel.get(sFileName);
 
@@ -304,7 +305,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
 
-            sftpChannel.cd("/nazar");
+            sftpChannel.cd("/home/nazare/");
 
             RandomAccessFile f = new RandomAccessFile(file, "r");
             byte[] b = new byte[(int)f.length()];

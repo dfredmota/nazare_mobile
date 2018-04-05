@@ -2,6 +2,8 @@ package br.com.resoluteit.task;
 
 import android.os.AsyncTask;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import br.com.resoluteit.delegate.SincronismoDelegate;
 import br.com.resoluteit.model.PesquisaPreco;
@@ -28,9 +30,11 @@ public class SincronizarTask extends AsyncTask<String, String, String> {
 
         WsDao ws = new WsDao();
 
+        String dia = getDayToday();
+
         try {
 
-            listaRetorno = ws.sincronizaPesquisaPreco();
+            listaRetorno = ws.sincronizaPesquisaPreco(Integer.parseInt(params[0]),dia);
 
         // se a lista nao for nula nem vazia setar os arquivos pra sincronizados
 
@@ -66,4 +70,59 @@ public class SincronizarTask extends AsyncTask<String, String, String> {
 
         this.sincronizeDelegate.sincronizou(listaRetorno);
     }
+
+
+    private String getDayToday(){
+
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+
+        String dia = "";
+
+        switch (day){
+
+
+            case 0:
+
+                dia = "sabado";
+                break;
+
+            case 1:
+
+                dia = "domingo";
+                break;
+
+            case 2:
+
+                dia = "segunda";
+                break;
+
+            case 3:
+
+                dia = "terca";
+                break;
+
+            case 4:
+
+                dia = "quarta";
+                break;
+
+            case 5:
+
+                dia = "quinta";
+                break;
+
+            case 6:
+
+                dia = "sexta";
+                break;
+
+        }
+
+        return dia;
+
+    }
+
 }
