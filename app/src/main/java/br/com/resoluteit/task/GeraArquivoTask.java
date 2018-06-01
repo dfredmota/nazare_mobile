@@ -263,7 +263,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
 
-            sftpChannel.cd("/home/nazare/");
+            sftpChannel.cd("/home/nazare/arquivos_app");
 
             InputStream in = sftpChannel.get(sFileName);
 
@@ -305,7 +305,7 @@ public class GeraArquivoTask extends AsyncTask<Object, Boolean, Boolean> {
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
 
-            sftpChannel.cd("/home/nazare/");
+            sftpChannel.cd("/home/nazare/arquivos_app");
 
             RandomAccessFile f = new RandomAccessFile(file, "r");
             byte[] b = new byte[(int)f.length()];
